@@ -57,11 +57,6 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Catch-all route to redirect unmatched URLs to homepage
-app.all("*", (req, res) => {
-  res.redirect("/");
-});
-
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server ${PORT}-portda ishlamoqda`);
