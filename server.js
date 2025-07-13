@@ -1,24 +1,23 @@
-const express = require('express');
-const path = require('path');
-const authRoutes = require('./routes/auth');
-const tokenRoutes = require('./routes/token');
-const exportRoutes = require('./routes/export-xlsx');
-const posterRoutes = require('./routes/poster');
+const express = require("express");
+const path = require("path");
+const authRoutes = require("./routes/auth");
+const tokenRoutes = require("./routes/token");
+const posterRoutes = require("./routes/poster");
 
 const app = express();
 
 // Middleware
 app.use((req, res, next) => {
   res.set({
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'GET, POST',
-    'Access-Control-Allow-Headers': 'Content-Type',
+    "Access-Control-Allow-Origin": "*",
+    "Access-Control-Allow-Methods": "GET, POST",
+    "Access-Control-Allow-Headers": "Content-Type",
   });
   next();
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
   const originalSend = res.send;
@@ -38,16 +37,21 @@ app.use((req, res, next) => {
   next();
 });
 
-
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/token', tokenRoutes);
-app.use('/api/export-xlsx', exportRoutes);
-app.use('/api/poster', posterRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/token", tokenRoutes);
+app.use("/api/poster", posterRoutes);
+app.get("/getToken", (req, res) => {
+  if (req?.cookies?.authToken) {
+    res.send({ data: { token: req?.cookies?.authToken } });
+  } else {
+    res.send({ data: { token: null } });
+  }
+});
 
 // Asosiy sahifa
 
