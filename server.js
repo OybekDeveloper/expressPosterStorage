@@ -39,10 +39,6 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
@@ -57,6 +53,14 @@ app.get("/getToken", (req, res) => {
 });
 
 // Asosiy sahifa
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// Catch-all route to redirect unmatched URLs to homepage
+app.all("*", (req, res) => {
+  res.redirect("/");
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
