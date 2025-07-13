@@ -3,6 +3,7 @@ const path = require("path");
 const authRoutes = require("./routes/auth");
 const tokenRoutes = require("./routes/token");
 const posterRoutes = require("./routes/poster");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
@@ -17,6 +18,7 @@ app.use((req, res, next) => {
 });
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use((req, res, next) => {
@@ -45,6 +47,7 @@ app.get("/", (req, res) => {
 app.use("/api/auth", authRoutes);
 app.use("/api/token", tokenRoutes);
 app.use("/api/poster", posterRoutes);
+
 app.get("/getToken", (req, res) => {
   if (req?.cookies?.authToken) {
     res.send({ data: { token: req?.cookies?.authToken } });
