@@ -29,7 +29,7 @@ router.get('/', async (req, res) => {
   formData.append('application_id', auth.application_id);
   formData.append('application_secret', auth.application_secret);
   formData.append('grant_type', 'authorization_code');
-  formData.append('redirect_uri', 'https://posterstorage.onrender.com/api/auth');
+  formData.append('redirect_uri', 'https://expressposterstorage.onrender.com/api/auth');
   formData.append('code', auth.code);
 
   try {
