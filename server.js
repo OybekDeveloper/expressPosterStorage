@@ -1,0 +1,57 @@
+const express = require('express');
+const path = require('path');
+const authRoutes = require('./routes/auth');
+const tokenRoutes = require('./routes/token');
+const exportRoutes = require('./routes/export-xlsx');
+const posterRoutes = require('./routes/poster');
+
+const app = express();
+
+// Middleware
+app.use((req, res, next) => {
+  res.set({
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Methods': 'GET, POST',
+    'Access-Control-Allow-Headers': 'Content-Type',
+  });
+  next();
+});
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+app.use((req, res, next) => {
+  const originalSend = res.send;
+  res.send = function (body) {
+    if (typeof body === "string" && body.includes("</body>")) {
+      const script = `
+        <script>
+          window.addEventListener('load', function () {
+            top.postMessage({ hideSpinner: true }, '*');
+          }, false);
+        </script>
+      `;
+      body = body.replace("</body>", `${script}</body>`);
+    }
+    originalSend.call(this, body);
+  };
+  next();
+});
+
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Routes
+app.use('/api/auth', authRoutes);
+app.use('/api/token', tokenRoutes);
+app.use('/api/export-xlsx', exportRoutes);
+app.use('/api/poster', posterRoutes);
+
+// Asosiy sahifa
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server ${PORT}-portda ishlamoqda`);
+});
