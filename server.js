@@ -50,9 +50,9 @@ app.use("/api/poster", posterRoutes);
 
 app.get("/getToken", (req, res) => {
   if (req?.cookies?.authToken) {
-    res.send({ data: { token: req?.cookies?.authToken } });
+    res.send({ token: req?.cookies?.authToken });
   } else {
-    res.send({ data: { token: null } });
+    res.send({ token: null });
   }
 });
 

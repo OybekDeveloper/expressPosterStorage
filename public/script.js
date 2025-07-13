@@ -25,8 +25,25 @@ document.addEventListener("DOMContentLoaded", () => {
   const errorMessage = document.getElementById("error-message");
   const loading = document.getElementById("loading");
   const flexContainer = document.querySelector(".flex-container");
-
   let token = null; // Initialize token as null
+
+  axios
+    .get("/getToken")
+    .then((response) => {
+      console.log("Token response:", response);
+      if (response.data.token) {
+        token = response.data.token;
+        console.log("Token fetched successfully:", response);
+        toggleUI(true);
+        fetchInitialData();
+      } else {
+        toggleUI(false);
+      }
+    })
+    .catch((err) => {
+      console.error("Token fetch error:", err);
+      toggleUI(false);
+    });
   let productsData = [];
   let ingredientsData = [];
   let storesData = [];
@@ -149,23 +166,7 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   calendarToggle.parentElement.appendChild(quickRangesContainer);
 
-  // Token olish
-  axios
-    .get("/getToken")
-    .then((response) => {
-      if (response.data.token) {
-        token = response.data.token;
-        toggleUI(true);
-        fetchInitialData();
-      } else {
-        toggleUI(false);
-      }
-    })
-    .catch((err) => {
-      console.error("Token fetch error:", err);
-      toggleUI(false);
-    });
-
+  console.log("Token:", token);
   // Boshlang'ich ma'lumotlarni olish
   async function fetchInitialData() {
     try {
